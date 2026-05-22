@@ -3,9 +3,9 @@ import logging
 import tempfile
 import shutil
 import subprocess
-from langchain_community.document_loaders import GenericLoader
+from langchain_community.document_loaders.generic import GenericLoader
 from langchain_community.document_loaders.parsers import LanguageParser
-from langchain_community.document_loaders.parsers.language import Language
+from langchain_community.document_loaders.parsers.language.language_parser import Language
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
