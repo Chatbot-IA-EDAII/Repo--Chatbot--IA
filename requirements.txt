@@ -1,13 +1,11 @@
-# --- Librerías base del RAG ---
-langchain
-langchain-community
-langchain-openai
-langchain-google-genai
-langchain-chroma
-langchain-huggingface
-sentence-transformers
-
-# --- Librerías de la API y Entorno  ---
-fastapi          # Para crear la API web que conectará con la interfaz
-uvicorn          # El servidor que hará correr a FastAPI
-python-dotenv    # Para que Python pueda leer el archivo .env fácilmente
+langchain==0.3.0
+langchain-community==0.3.0
+langchain-google-genai==2.0.0
+langchain-chroma==0.1.4
+langchain-huggingface==0.1.0
+sentence-transformers==3.0.0
+fastapi==0.110.0
+uvicorn==0.29.0
+python-dotenv==1.0.0
+chromadb==0.5.0
+gitpython==3.1.43
