@@ -7,28 +7,27 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
-from contextlib import asynccontextmanager
 
 load_dotenv()
 
 chain = None
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
+def get_chain():
     global chain
-    try:
-        from chain import chain as rag_chain
-        chain = rag_chain
-        print("✅ RAG inicializado correctamente")
-    except Exception as e:
-        print(f"❌ Error al inicializar RAG: {e}")
-    yield
+    if chain is None:
+        try:
+            from chain import chain as rag_chain
+            chain = rag_chain
+            print("✅ RAG inicializado correctamente")
+        except Exception as e:
+            print(f"❌ Error al inicializar RAG: {e}")
+            raise
+    return chain
 
 app = FastAPI(
     title="MiniRodri API",
     description="Servidor de consulta para el proyecto de EDA2",
-    version="1.0.0",
-    lifespan=lifespan
+    version="1.0.0"
 )
 
 app.add_middleware(
@@ -51,21 +50,19 @@ def home():
 
 @app.post("/preguntar")
 async def responder_pregunta(datos: Consulta):
-    if not chain:
-        raise HTTPException(status_code=500, detail="La lógica del chatbot no está cargada.")
-    
     if not datos.pregunta.strip():
         raise HTTPException(status_code=400, detail="La pregunta no puede estar vacía.")
 
     try:
-        respuesta = chain.invoke(datos.pregunta)
+        rag = get_chain()
+        respuesta = rag.invoke(datos.pregunta)
         return {
             "pregunta": datos.pregunta,
             "respuesta": respuesta
         }
     except Exception as e:
         print(f"Error al procesar consulta: {e}")
-        raise HTTPException(status_code=500, detail="Error interno al procesar la respuesta.")
+        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
