@@ -5,7 +5,6 @@ from loader import cargar_repositorio_python
 
 _documentos_cache = None
 
-# Diccionario de traducciones español → inglés
 TRADUCCIONES = {
     "arbol": "tree",
     "arboles": "trees",
@@ -49,18 +48,15 @@ def buscar_fragmentos_relevantes(query: str, k: int = 5, persist_directory: str 
 
         query_lower = query.lower()
 
-        # Generar variaciones de búsqueda
         variaciones = set()
         variaciones.add(query_lower)
         variaciones.add(query_lower.replace(' ', '_'))
         variaciones.add(query_lower.replace(' ', ''))
         variaciones.add(query_lower.replace('_', ' '))
 
-        # Agregar palabras individuales
         palabras = query_lower.replace('_', ' ').split()
         for palabra in palabras:
             variaciones.add(palabra)
-            # Traducir al inglés si existe
             if palabra in TRADUCCIONES:
                 traduccion = TRADUCCIONES[palabra]
                 variaciones.add(traduccion)
@@ -71,7 +67,8 @@ def buscar_fragmentos_relevantes(query: str, k: int = 5, persist_directory: str 
         relevantes = []
         for doc in _documentos_cache:
             contenido = doc.page_content.lower()
-            if any(v in contenido for v in variaciones):
+            fuente = str(doc.metadata.get('source', '')).lower()
+            if any(v in contenido for v in variaciones) or any(v in fuente for v in variaciones):
                 relevantes.append(doc)
 
         resultado = relevantes[:k] if relevantes else _documentos_cache[:3]
