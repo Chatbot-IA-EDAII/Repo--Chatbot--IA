@@ -13,7 +13,6 @@ def buscar_fragmentos_relevantes(query: str, k: int = 5, persist_directory: str 
         return []
 
     try:
-        # Usar cache para no clonar el repo en cada petición
         if _documentos_cache is None:
             print("Cargando documentos del repositorio backend...")
             _documentos_cache = cargar_repositorio_python()
@@ -22,18 +21,24 @@ def buscar_fragmentos_relevantes(query: str, k: int = 5, persist_directory: str 
             print("No se pudieron cargar documentos.")
             return []
 
-        # Búsqueda simple por palabras clave en vez de vectores
         query_lower = query.lower()
-        relevantes = []
+        variaciones = set()
+        variaciones.add(query_lower)
+        variaciones.add(query_lower.replace(' ', '_'))
+        variaciones.add(query_lower.replace(' ', ''))
+        variaciones.add(query_lower.replace('_', ' '))
 
+        palabras = query_lower.replace('_', ' ').split()
+        for palabra in palabras:
+            variaciones.add(palabra)
+
+        relevantes = []
         for doc in _documentos_cache:
             contenido = doc.page_content.lower()
-            palabras = query_lower.split()
-            if any(palabra in contenido for palabra in palabras):
+            if any(v in contenido for v in variaciones):
                 relevantes.append(doc)
 
-        # Retornar los k más relevantes
-        resultado = relevantes[:k] if relevantes else _documentos_cache[:k]
+        resultado = relevantes[:k] if relevantes else _documentos_cache[:3]
         print(f"Se encontraron {len(resultado)} fragmentos relevantes.")
         return resultado
 
