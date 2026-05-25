@@ -1,4 +1,5 @@
 import os
+import re
 from langchain_core.documents import Document
 from typing import List
 from loader import cargar_repositorio_python
@@ -28,6 +29,24 @@ TRADUCCIONES = {
     "paralelos": "parallel",
     "archivo": "file",
     "archivos": "files",
+
+      # Aliases de algoritmos
+    "mergesort": "merge_sort",
+    "quicksort": "quick_sort",
+    "bubblesort": "bubble_sort",
+    "heapsort": "heap_sort",
+    "radixsort": "radix_sort",
+    "countingsort": "counting_sort",
+    "merge": "merge_sort",
+    "quick": "quick_sort",
+    "bubble": "bubble_sort",
+    "heap": "heap_sort",
+    "radix": "radix_sort",
+    "counting": "counting_sort",
+    "bfs": "bfs",
+    "dfs": "dfs",
+    "binaria": "binary",
+    "lineal": "lineal",
 }
 
 def buscar_fragmentos_relevantes(query: str, k: int = 5, persist_directory: str = "./db") -> List[Document]:
@@ -63,6 +82,12 @@ def buscar_fragmentos_relevantes(query: str, k: int = 5, persist_directory: str 
                 variaciones.add(traduccion + 's')
 
         print(f"Buscando con variaciones: {variaciones}")
+
+        # Separar palabras pegadas como "mergesort" → "merge sort"
+
+        separado = re.sub(r'([a-z])([A-Z])', r'\1 \2', query_lower).lower()
+        variaciones.add(separado)
+        variaciones.add(separado.replace(' ', '_'))
 
         relevantes = []
         for doc in _documentos_cache:
