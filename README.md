@@ -26,6 +26,20 @@ El proyecto está dividido en módulos fundamentales para el backend, el procesa
 ### Variables de entorno
 Antes de ejecutar el chatbot, copia [`.env.example`](.env.example) a `.env` y agrega tu `GOOGLE_API_KEY`. No dejes claves reales hardcodeadas en `chain.py`.
 
+## Integrantes 
+- Jim Nava Bryan
+- Martínez Mondragón Benjamín
+- Arroyo Castañon Dulce Carolina
+- Perea Yañez Oscar
+- Hernandez Camargo Josue
+- Galindo Contreras Angel Gabriel
+- Marín Pérez Daniela
+- Escobedo Reyes Emma Esmeralda
+- Martínez García Nour
+- Jiménez Vega José Enrique
+- Orozco González Samuel Alejandro
+- Zambrano Mota María Fernanda
+
 ## 📂 Estructura del Repositorio
 
 ```text
